@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.json()); // 👈 THIS LINE IS CRUCIAL!
 
 let id = 0;
-const tasks = [];
+let tasks = [];
 
 app.get('/tasks', (req, res) => {
   res.json(tasks);
@@ -29,6 +29,18 @@ app.post('/tasks', (req, res) => {
 
   tasks.push(newTask);
   res.status(201).json(newTask);
+});
+
+app.delete('/tasks/:id', (req, res) => {
+    const idToRemove = parseInt(req.params.id);
+
+    if (!idToRemove) {
+        return res.status(400).json({ error: "Invalid ID" });
+    }
+
+    tasks = tasks.filter(task => task.id !== idToRemove);
+
+    res.json({ message: "Deleted successfully" });
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
